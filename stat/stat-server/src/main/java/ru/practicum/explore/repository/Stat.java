@@ -23,12 +23,11 @@ public class Stat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "income_date")
     private LocalDateTime dateTimeIncome;
     private String uri;
     private String ip;
-    @Column(name = "app")
     private String app;
 
     public static Stat toStat(StatDto dto) {

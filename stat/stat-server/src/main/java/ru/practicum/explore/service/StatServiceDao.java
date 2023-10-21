@@ -23,6 +23,7 @@ public class StatServiceDao implements StatService {
 
 
     @Override
+    @Transactional(readOnly = false)
     public Stat create(StatDto statDto) {
         return statRepository.save(Stat.toStat(statDto));
     }
