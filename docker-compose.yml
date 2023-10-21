@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   stat-server:
-    build: stat\stat-server
+    build: stat/stat-server
     container_name: stat-server
     depends_on:
       - stats-db
