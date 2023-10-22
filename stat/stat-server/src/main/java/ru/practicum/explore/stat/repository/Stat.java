@@ -1,4 +1,4 @@
-package ru.practicum.explore.repository;
+package ru.practicum.explore.stat.repository;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import dto.StatDto;
@@ -35,7 +35,11 @@ public class Stat {
         stat.setApp(dto.getApp());
         stat.setIp(dto.getIp());
         stat.setUri(dto.getUri());
-        stat.setDateTimeIncome(dto.getTimeStamp());
+        if (dto.getTimeStamp() == null) {
+            stat.setDateTimeIncome(LocalDateTime.now());
+        } else {
+            stat.setDateTimeIncome(dto.getTimeStamp());
+        }
         return stat;
     }
 }

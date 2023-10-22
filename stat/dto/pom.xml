@@ -10,6 +10,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
+
     <groupId>ru.practicum</groupId>
     <artifactId>dto</artifactId>
     <version>0.0.1-SNAPSHOT</version>

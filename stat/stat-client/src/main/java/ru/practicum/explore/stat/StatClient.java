@@ -9,3 +9,4 @@ public class StatClient {
 		SpringApplication.run(StatClient.class, args);
 	}
 }
+

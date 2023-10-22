@@ -1,16 +1,13 @@
-package ru.practicum.explore.controller;
+package ru.practicum.explore.stat.controller;
 
-import dto.RequestStat;
+
 import dto.StatDto;
+import dto.ViewStat;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.explore.repository.Stat;
-import ru.practicum.explore.service.StatService;
+import org.springframework.web.bind.annotation.*;
+import ru.practicum.explore.stat.repository.Stat;
+import ru.practicum.explore.stat.service.StatService;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -26,10 +23,10 @@ public class StatController {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @GetMapping("/stats")
-    public List<RequestStat> getAllStatistic(@RequestParam String start, @RequestParam String end,
-                                             @RequestParam String[] uris, @RequestParam Boolean unique) {
+    public List<ViewStat> getAllStatistic(@RequestParam String start, @RequestParam String end,
+                                          @RequestParam(required = false) String[] uris,
+                                          @RequestParam(required = false, defaultValue = "false") Boolean unique) {
 
-        log.info("Get statics with next parametrs start {}, end={}, uris={}, uniqui={}", start, end, uris, unique);
         return statService.getAllStatistic(LocalDateTime.parse(start, DATE_TIME_FORMATTER),
                 LocalDateTime.parse(end, DATE_TIME_FORMATTER), uris, unique);
     }
