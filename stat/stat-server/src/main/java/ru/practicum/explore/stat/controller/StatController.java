@@ -24,7 +24,7 @@ public class StatController {
 
     @GetMapping("/stats")
     public List<ViewStat> getAllStatistic(@RequestParam String start, @RequestParam String end,
-                                          @RequestParam(required = false) String[] uris,
+                                          @RequestParam(required = false) List<String> uris,
                                           @RequestParam(required = false, defaultValue = "false") Boolean unique) {
 
         return statService.getAllStatistic(LocalDateTime.parse(start, DATE_TIME_FORMATTER),

@@ -9,7 +9,7 @@ public interface ViewStat {
 
     void setUri(String uri);
 
-    int getHit();
+    int getHits();
 
-    void setHit(int hit);
+    void setHits(int hit);
 }

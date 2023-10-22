@@ -19,8 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class StatServiceDao implements StatService {
-    private final StatRepository statRepository;
 
+    private final StatRepository statRepository;
 
     @Override
     @Transactional(readOnly = false)
@@ -29,9 +29,10 @@ public class StatServiceDao implements StatService {
     }
 
     @Override
-    public List<ViewStat> getAllStatistic(LocalDateTime start, LocalDateTime end, String[] uris, Boolean unique) {
+    public List<ViewStat> getAllStatistic(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         if (unique) {
-            return statRepository.getAllStatistic(start, end, uris);
+            List<ViewStat> ls = statRepository.getAllStatistic(start, end, uris);
+            return ls;
         } else {
             return statRepository.getAllStatisticNonUnique(start, end, uris);
         }
