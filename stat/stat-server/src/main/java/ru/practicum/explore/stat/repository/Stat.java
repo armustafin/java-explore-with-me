@@ -1,7 +1,6 @@
 package ru.practicum.explore.stat.repository;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import dto.StatDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
