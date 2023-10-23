@@ -29,17 +29,4 @@ public class Stat {
     private String uri;
     private String ip;
     private String app;
-
-    public static Stat toStat(StatDto dto) {
-        Stat stat = new Stat();
-        stat.setApp(dto.getApp());
-        stat.setIp(dto.getIp());
-        stat.setUri(dto.getUri());
-        if (dto.getTimeStamp() == null) {
-            stat.setDateTimeIncome(LocalDateTime.now());
-        } else {
-            stat.setDateTimeIncome(dto.getTimeStamp());
-        }
-        return stat;
-    }
 }

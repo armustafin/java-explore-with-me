@@ -1,12 +1,14 @@
 package dto;
 
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.NoArgsConstructor;
 
 
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class RequestStat {
     private String app;
     private String uri;
