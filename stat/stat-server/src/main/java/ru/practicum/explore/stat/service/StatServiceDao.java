@@ -23,6 +23,7 @@ public class StatServiceDao implements StatService {
 
     private final StatRepository statRepository;
     private final StatMapper statMapper;
+
     @Override
     @Transactional(readOnly = false)
     public Stat create(StatDto statDto) {
