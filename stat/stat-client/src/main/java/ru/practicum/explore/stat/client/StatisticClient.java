@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -26,7 +27,7 @@ public class StatisticClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> getAllStatistic(String start, String end, String[] uris, Boolean unique) {
+    public ResponseEntity<Object> getAllStatistic(String start, String end, List<String> uris, Boolean unique) {
         Map<String, Object> parameters = Map.of(
                 "start", start,
                 "end", end,

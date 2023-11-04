@@ -24,3 +24,4 @@ public interface StatRepository extends JpaRepository<Stat, Integer>, JpaSpecifi
             "ORDER BY COUNT(ST.id) DESC")
     List<ViewStat> getAllStatisticNonUnique(LocalDateTime start, LocalDateTime end, List<String> uris);
 }
+

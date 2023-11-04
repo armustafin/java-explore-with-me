@@ -17,6 +17,7 @@ import dto.StatDto;
 import ru.practicum.explore.stat.client.StatisticClient;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class StatController {
     public ResponseEntity<Object> getAllStatistic(@RequestParam
                                                   @DateTimeFormat(pattern = FORMAT_DATE) @Valid LocalDateTime start,
                                                   @DateTimeFormat(pattern = FORMAT_DATE) @Valid @RequestParam LocalDateTime end,
-                                                  @RequestParam String[] uris,
+                                                  @RequestParam List<String> uris,
                                                   @RequestParam Boolean unique) {
 
         log.info("Get statics with next parametrs start {}, end={}, uris={}, uniqui={}", start, end, uris, unique);
