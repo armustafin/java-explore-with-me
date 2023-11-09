@@ -43,7 +43,7 @@ public class EventPublicController {
         // создать класс евенты парам
         EventsParam eventsParam = new EventsParam();
         eventsParam.setIp(request.getRemoteAddr());
-
+        eventsParam.setText(text);
         eventsParam.setPaid(paid);
         eventsParam.setUri(request.getRequestURI());
         eventsParam.setSort(sort);
