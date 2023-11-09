@@ -77,8 +77,8 @@ public class EventsServiceDao implements EventsService {
             }
         }
         if (parametrs.isExistText()) {
-            booleanBuilder.and(event.annotation.contains(parametrs.getText())
-                    .or(event.description.contains(parametrs.getText())));
+            booleanBuilder.and(event.annotation.containsIgnoreCase(parametrs.getText())
+                    .or(event.description.containsIgnoreCase(parametrs.getText())));
         }
 
         if (parametrs.isExistCategories()) {
@@ -108,7 +108,7 @@ public class EventsServiceDao implements EventsService {
 
         }
 
-        List<Event> events = eventsRepisotory.findAll(booleanBuilder, of).toList();
+        List<Event> events = eventsRepisotory.findAll(booleanBuilder.getValue(), of).toList();
 
         List<String> uris = events.stream().map(event1 -> "/events/" + event1.getId()).collect(Collectors.toList());
 
