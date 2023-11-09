@@ -294,9 +294,10 @@ public class EventsServiceDao implements EventsService {
                                                                EventRequestStatusUpdateRequest ev) {
         List<ParticipationRequestDto> confirmedRequests = new ArrayList<>();
         List<ParticipationRequestDto> rejectedRequests = new ArrayList<>();
-
         EventRequestStatusUpdateResult result = new EventRequestStatusUpdateResult();
+
         Request request;
+
         userRepository.findById(userId)
                 .orElseThrow(() -> new InvalidExistException("User with id=" + userId + " was not found"));
         Event event = eventsRepisotory.findById(eventId)
@@ -305,6 +306,16 @@ public class EventsServiceDao implements EventsService {
         List<Integer> requestIds = ev.getRequestIds();
         boolean needRejectet = false;
         int limit = event.getParticipantLimit();
+        int countRequest = requestRepisotory.findAllByStatusAndEvent(StatusRequest.CONFIRMED, event).size();
+
+        if (limit > 0 && limit <= countRequest && ev.getStatus() == StatusRequest.CONFIRMED) {
+            List<Request> requsts = requestRepisotory.findAllByStatusAndEvent(StatusRequest.PENDING, event);
+            for (Request req : requsts) {
+                req.setStatus(StatusRequest.REJECTED);
+                requestRepisotory.save(req);
+            }
+            throw new DataIntegrityViolationException("Request must have status PENDING");
+        }
 
         if (ev.getStatus() == StatusRequest.REJECTED) {
             for (int id : requestIds) {
@@ -337,11 +348,10 @@ public class EventsServiceDao implements EventsService {
                 result.setRejectedRequests(rejectedRequests);
                 return result;
             } else { // лимит есть
-                int countRequest = requestRepisotory.findAllByStatusAndEvent(StatusRequest.CONFIRMED, event).size();
-
                 for (int id : requestIds) {
                     request = requestRepisotory.findById(id)
                             .orElseThrow(() -> new InvalidExistException("Requst with id=" + id + " was not found"));
+
                     if (request.getStatus() != StatusRequest.PENDING) {
                         throw new DataIntegrityViolationException("Request must have status PENDING");
                     }
