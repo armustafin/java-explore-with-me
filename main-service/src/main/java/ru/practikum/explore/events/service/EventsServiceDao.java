@@ -303,11 +303,9 @@ public class EventsServiceDao implements EventsService {
                 .orElseThrow(() -> new InvalidExistException("Event with id=" + eventId + " was not found"));
 
         List<Integer> requestIds = ev.getRequestIds();
-        boolean isNeedAllowed = true;
+        boolean needRejectet = false;
         int limit = event.getParticipantLimit();
-        if (limit == 0) {
-            isNeedAllowed = false;
-        }
+
         if (ev.getStatus() == StatusRequest.REJECTED) {
             for (int id : requestIds) {
                 request = requestRepisotory.findById(id)
@@ -322,32 +320,25 @@ public class EventsServiceDao implements EventsService {
             result.setConfirmedRequests(confirmedRequests);
             result.setRejectedRequests(rejectedRequests);
             return result;
-        } else {
-
+        } else {  // for StatusRequest.CONFIRMED
             //если для события лимит заявок равен 0 или отключена пре-модерация заявок, то подтверждение заявок не требуется
-            int countRequest = requestRepisotory.findAllByStatusAndEvent(StatusRequest.CONFIRMED, event).size();
-            if (limit == 0 || !event.getRequestModeration()) {
+            if (limit == 0) {
                 for (int id : requestIds) {
                     request = requestRepisotory.findById(id)
                             .orElseThrow(() -> new InvalidExistException("Requst with id=" + id + " was not found"));
                     if (request.getStatus() != StatusRequest.PENDING) {
                         throw new DataIntegrityViolationException("Request must have status PENDING");
                     }
-                    if (limit == 0 || countRequest < limit) {
-                        request.setStatus(ev.getStatus());
-                        requestRepisotory.save(request);
-                        countRequest++;
-                        confirmedRequests.add(requsterMapper.toParticipationRequestDto(request));
-                    } else {
-                        request.setStatus(StatusRequest.REJECTED);
-                        requestRepisotory.save(request);
-                        rejectedRequests.add(requsterMapper.toParticipationRequestDto(request));
-                    }
+                    request.setStatus(StatusRequest.CONFIRMED);
+                    requestRepisotory.save(request);
+                    confirmedRequests.add(requsterMapper.toParticipationRequestDto(request));
                 }
                 result.setConfirmedRequests(confirmedRequests);
                 result.setRejectedRequests(rejectedRequests);
                 return result;
-            } else {
+            } else { // лимит есть
+                int countRequest = requestRepisotory.findAllByStatusAndEvent(StatusRequest.CONFIRMED, event).size();
+
                 for (int id : requestIds) {
                     request = requestRepisotory.findById(id)
                             .orElseThrow(() -> new InvalidExistException("Requst with id=" + id + " was not found"));
@@ -355,14 +346,22 @@ public class EventsServiceDao implements EventsService {
                         throw new DataIntegrityViolationException("Request must have status PENDING");
                     }
                     if (countRequest < limit) {
-                        request.setStatus(ev.getStatus());
+                        request.setStatus(StatusRequest.CONFIRMED);
                         requestRepisotory.save(request);
                         countRequest++;
                         confirmedRequests.add(requsterMapper.toParticipationRequestDto(request));
                     } else {
+                        needRejectet = true;
                         request.setStatus(StatusRequest.REJECTED);
                         requestRepisotory.save(request);
                         rejectedRequests.add(requsterMapper.toParticipationRequestDto(request));
+                    }
+                }
+                if (needRejectet) {
+                    List<Request> requsts = requestRepisotory.findAllByStatusAndEvent(StatusRequest.PENDING, event);
+                    for (Request req : requsts) {
+                        req.setStatus(StatusRequest.REJECTED);
+                        requestRepisotory.save(req);
                     }
                 }
                 result.setConfirmedRequests(confirmedRequests);
