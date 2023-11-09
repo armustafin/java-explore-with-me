@@ -3,6 +3,7 @@ package ru.practikum.explore.categories.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +40,9 @@ public class CategoryServiceDao implements CategoryService {
     @Transactional(readOnly = false)
     @Override
     public Category add(NewCategoryDto categoryDto) {
+        if (categoryRepository.findByName(categoryDto.getName()) == null) {
+            throw new DataIntegrityViolationException("exis name!");
+        }
         return categoryRepository.save(categoryMapper.toCategory(categoryDto));
     }
 
@@ -56,7 +60,10 @@ public class CategoryServiceDao implements CategoryService {
     public Category patch(Integer catId, CategoryDto categoryDto) {
         Category category = categoryRepository.findById(catId)
                 .orElseThrow(() -> new InvalidExistException("Category with id=" + catId + " was not found="));
-        category.setName(category.getName());
+        if (categoryRepository.findByName(categoryDto.getName()) == null) {
+            throw new DataIntegrityViolationException("exis name!");
+        }
+        category.setName(categoryDto.getName());
         return categoryRepository.save(category);
     }
 }
