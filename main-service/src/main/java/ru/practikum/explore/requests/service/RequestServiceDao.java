@@ -97,7 +97,7 @@ public class RequestServiceDao implements RequestService {
                 .orElseThrow(() -> new InvalidExistException("User with id=" + userId + " was not found"));
         Request request = requestRepisotory.findById(requestId)
                 .orElseThrow(() -> new InvalidExistException("Requst with id=" + requestId + " was not found"));
-        request.setStatus(StatusRequest.CANCEL);
+        request.setStatus(StatusRequest.CANCELED);
         return requsterMapper.mapToDto(request);
     }
 }

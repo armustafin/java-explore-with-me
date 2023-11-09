@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -293,6 +294,7 @@ public class EventsServiceDao implements EventsService {
                                                                EventRequestStatusUpdateRequest ev) {
         List<ParticipationRequestDto> confirmedRequests = new ArrayList<>();
         List<ParticipationRequestDto> rejectedRequests = new ArrayList<>();
+
         EventRequestStatusUpdateResult result = new EventRequestStatusUpdateResult();
         Request request;
         userRepository.findById(userId)
@@ -313,7 +315,7 @@ public class EventsServiceDao implements EventsService {
                 request = requestRepisotory.findById(id)
                         .orElseThrow(() -> new InvalidExistException("Requst with id=" + id + " was not found"));
                 if (request.getStatus() != StatusRequest.PENDING) {
-                    throw new InvalidRequestException("Request must have status PENDING");
+                    throw new DataIntegrityViolationException("Request must have status PENDING");
                 }
                 if (limit == 0 || countRequest < limit) {
                     request.setStatus(ev.getStatus());
@@ -332,7 +334,7 @@ public class EventsServiceDao implements EventsService {
                 request = requestRepisotory.findById(id)
                         .orElseThrow(() -> new InvalidExistException("Requst with id=" + id + " was not found"));
                 if (request.getStatus() != StatusRequest.PENDING) {
-                    throw new InvalidRequestException("Request must have status PENDING");
+                    throw new DataIntegrityViolationException("Request must have status PENDING");
                 }
                 if (countRequest < limit) {
                     request.setStatus(ev.getStatus());

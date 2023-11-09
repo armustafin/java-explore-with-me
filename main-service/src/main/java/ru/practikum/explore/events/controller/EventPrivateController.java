@@ -62,7 +62,7 @@ public class EventPrivateController {
     }
 
     @PatchMapping("/{userId}/events/{eventId}/requests")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public EventRequestStatusUpdateResult patchRequestsByEvent(@PathVariable Integer userId,
                                                                @PathVariable Integer eventId,
                                                                @Valid @RequestBody EventRequestStatusUpdateRequest ev) {

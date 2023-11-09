@@ -60,7 +60,8 @@ public class CategoryServiceDao implements CategoryService {
     public Category patch(Integer catId, CategoryDto categoryDto) {
         Category category = categoryRepository.findById(catId)
                 .orElseThrow(() -> new InvalidExistException("Category with id=" + catId + " was not found="));
-        if (categoryRepository.findByName(categoryDto.getName()) != null) {
+        Category categoryByName = categoryRepository.findByName(categoryDto.getName());
+        if (categoryByName != null && categoryByName.getId() != catId) {
             throw new DataIntegrityViolationException("exist name!");
         }
         category.setName(categoryDto.getName());
