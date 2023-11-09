@@ -319,10 +319,12 @@ public class EventsServiceDao implements EventsService {
                 }
                 if (limit == 0 || countRequest < limit) {
                     request.setStatus(ev.getStatus());
+                    requestRepisotory.save(request);
                     countRequest++;
                     confirmedRequests.add(requsterMapper.toParticipationRequestDto(request));
                 } else {
                     request.setStatus(StatusRequest.REJECTED);
+                    requestRepisotory.save(request);
                     rejectedRequests.add(requsterMapper.toParticipationRequestDto(request));
                 }
             }
@@ -338,10 +340,12 @@ public class EventsServiceDao implements EventsService {
                 }
                 if (countRequest < limit) {
                     request.setStatus(ev.getStatus());
+                    requestRepisotory.save(request);
                     countRequest++;
                     confirmedRequests.add(requsterMapper.toParticipationRequestDto(request));
                 } else {
                     request.setStatus(StatusRequest.REJECTED);
+                    requestRepisotory.save(request);
                     rejectedRequests.add(requsterMapper.toParticipationRequestDto(request));
                 }
             }
