@@ -43,7 +43,7 @@ public class EventShortDto {
     public static final Comparator<EventShortDto> dateComparator = new Comparator<EventShortDto>() {
         @Override
         public int compare(EventShortDto ev1, EventShortDto ev2) {
-            return ev1.getEventDate().compareTo(ev2.getEventDate());
+            return - ev1.getEventDate().compareTo(ev2.getEventDate());
         }
     };
 }
