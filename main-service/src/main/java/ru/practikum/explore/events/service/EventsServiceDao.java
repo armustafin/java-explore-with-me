@@ -308,50 +308,67 @@ public class EventsServiceDao implements EventsService {
         if (limit == 0) {
             isNeedAllowed = false;
         }
-        //если для события лимит заявок равен 0 или отключена пре-модерация заявок, то подтверждение заявок не требуется
-        int countRequest = requestRepisotory.findAllByStatusAndEvent(StatusRequest.CONFIRMED, event).size();
-        if (limit == 0 || !event.getRequestModeration()) {
+        if (ev.getStatus() == StatusRequest.REJECTED) {
             for (int id : requestIds) {
                 request = requestRepisotory.findById(id)
                         .orElseThrow(() -> new InvalidExistException("Requst with id=" + id + " was not found"));
                 if (request.getStatus() != StatusRequest.PENDING) {
                     throw new DataIntegrityViolationException("Request must have status PENDING");
                 }
-                if (limit == 0 || countRequest < limit) {
-                    request.setStatus(ev.getStatus());
-                    requestRepisotory.save(request);
-                    countRequest++;
-                    confirmedRequests.add(requsterMapper.toParticipationRequestDto(request));
-                } else {
-                    request.setStatus(StatusRequest.REJECTED);
-                    requestRepisotory.save(request);
-                    rejectedRequests.add(requsterMapper.toParticipationRequestDto(request));
-                }
+                request.setStatus(StatusRequest.REJECTED);
+                requestRepisotory.save(request);
+                rejectedRequests.add(requsterMapper.toParticipationRequestDto(request));
             }
             result.setConfirmedRequests(confirmedRequests);
             result.setRejectedRequests(rejectedRequests);
             return result;
         } else {
-            for (int id : requestIds) {
-                request = requestRepisotory.findById(id)
-                        .orElseThrow(() -> new InvalidExistException("Requst with id=" + id + " was not found"));
-                if (request.getStatus() != StatusRequest.PENDING) {
-                    throw new DataIntegrityViolationException("Request must have status PENDING");
+
+            //если для события лимит заявок равен 0 или отключена пре-модерация заявок, то подтверждение заявок не требуется
+            int countRequest = requestRepisotory.findAllByStatusAndEvent(StatusRequest.CONFIRMED, event).size();
+            if (limit == 0 || !event.getRequestModeration()) {
+                for (int id : requestIds) {
+                    request = requestRepisotory.findById(id)
+                            .orElseThrow(() -> new InvalidExistException("Requst with id=" + id + " was not found"));
+                    if (request.getStatus() != StatusRequest.PENDING) {
+                        throw new DataIntegrityViolationException("Request must have status PENDING");
+                    }
+                    if (limit == 0 || countRequest < limit) {
+                        request.setStatus(ev.getStatus());
+                        requestRepisotory.save(request);
+                        countRequest++;
+                        confirmedRequests.add(requsterMapper.toParticipationRequestDto(request));
+                    } else {
+                        request.setStatus(StatusRequest.REJECTED);
+                        requestRepisotory.save(request);
+                        rejectedRequests.add(requsterMapper.toParticipationRequestDto(request));
+                    }
                 }
-                if (countRequest < limit) {
-                    request.setStatus(ev.getStatus());
-                    requestRepisotory.save(request);
-                    countRequest++;
-                    confirmedRequests.add(requsterMapper.toParticipationRequestDto(request));
-                } else {
-                    request.setStatus(StatusRequest.REJECTED);
-                    requestRepisotory.save(request);
-                    rejectedRequests.add(requsterMapper.toParticipationRequestDto(request));
+                result.setConfirmedRequests(confirmedRequests);
+                result.setRejectedRequests(rejectedRequests);
+                return result;
+            } else {
+                for (int id : requestIds) {
+                    request = requestRepisotory.findById(id)
+                            .orElseThrow(() -> new InvalidExistException("Requst with id=" + id + " was not found"));
+                    if (request.getStatus() != StatusRequest.PENDING) {
+                        throw new DataIntegrityViolationException("Request must have status PENDING");
+                    }
+                    if (countRequest < limit) {
+                        request.setStatus(ev.getStatus());
+                        requestRepisotory.save(request);
+                        countRequest++;
+                        confirmedRequests.add(requsterMapper.toParticipationRequestDto(request));
+                    } else {
+                        request.setStatus(StatusRequest.REJECTED);
+                        requestRepisotory.save(request);
+                        rejectedRequests.add(requsterMapper.toParticipationRequestDto(request));
+                    }
                 }
+                result.setConfirmedRequests(confirmedRequests);
+                result.setRejectedRequests(rejectedRequests);
+                return result;
             }
-            result.setConfirmedRequests(confirmedRequests);
-            result.setRejectedRequests(rejectedRequests);
-            return result;
         }
     }
 
