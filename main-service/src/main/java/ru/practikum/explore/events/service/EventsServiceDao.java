@@ -77,8 +77,8 @@ public class EventsServiceDao implements EventsService {
             }
         }
         if (parametrs.isExistText()) {
-            booleanBuilder.and(event.annotation.containsIgnoreCase(parametrs.getText()))
-                    .or(event.description.containsIgnoreCase(parametrs.getText()));
+            booleanBuilder.and(event.annotation.containsIgnoreCase(parametrs.getText())
+                    .or(event.description.containsIgnoreCase(parametrs.getText())));
         }
 
         if (parametrs.isExistCategories()) {
