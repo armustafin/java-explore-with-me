@@ -39,13 +39,15 @@ public class Event {
     private LocalDateTime eventDate;
     @Size(min = 20, max = 7000)
     private String description;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
-    private Boolean paid;
+    private boolean paid;
+    @Column(name = "participant_limit")
     private int participantLimit;
+    @Column(name = "request_moderation")
     private Boolean requestModeration;
     @Enumerated(EnumType.STRING)
     private StatusEvent state;

@@ -32,6 +32,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CompilationServiceDao implements CompilationService {
+    private final String stringStart = "0001-01-01 00:00:00";
+    private final String stringEnd = "3001-01-01 00:00:00";
 
     @Autowired
     private final EventsRepisotory eventsRepisotory;
@@ -58,11 +60,13 @@ public class CompilationServiceDao implements CompilationService {
         List<ViewRequst> viewReqest = requestRepisotory.findViewReqest(events.stream().collect(Collectors.toList()),
                 StatusRequest.CONFIRMED);
 
-        String stringStart = LocalDateTime.MIN.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        String stringEnd = LocalDateTime.MAX.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        // Запрос к базе данных статитики
-        List<ViewStat> viewStatList = (List<ViewStat>) statisticClient.getAllStatistic(stringStart,
-                stringEnd, uris, false);
+        List<ViewStat> viewStatList = statisticClient.getAllStatistic(stringStart, stringEnd, uris, true);
+        long views;
+        if (viewStatList.size() == 0) {
+            views = 0;
+        } else {
+            views = viewStatList.stream().mapToLong(value -> value.getHits()).sum();
+        }
 
         Map<Integer, EventShortDto> eventShortDtos = eventsMapper.toPublicEventMap(events.stream()
                 .collect(Collectors.toList()), viewStatList, viewReqest);
@@ -81,10 +85,14 @@ public class CompilationServiceDao implements CompilationService {
     @Override
     @Transactional
     public CompilationDto addCompilation(NewCompilationDto dto) {
+        List<Event> events = new ArrayList<>();
+        ;
         Compilations compilations = new Compilations();
         compilations.setTitle(dto.getTitle());
         compilations.setPinned(dto.isPinned());
-        List<Event> events = eventsRepisotory.findAllById(dto.getEvents());
+        if (dto.getEvents() != null) {
+            events = eventsRepisotory.findAllById(dto.getEvents());
+        }
         compilations.setEvents(events);
         compilationRepisotory.save(compilations);
         return getCompilationDto(compilations);
@@ -109,7 +117,7 @@ public class CompilationServiceDao implements CompilationService {
         if (dto.getTitle() != null) {
             compilations.setTitle(dto.getTitle());
         }
-        if (dto.getEvents() == null) {
+        if (dto.getEvents() != null) {
             List<Event> events = eventsRepisotory.findAllById(dto.getEvents());
             compilations.setEvents(events);
         }
@@ -119,18 +127,19 @@ public class CompilationServiceDao implements CompilationService {
     }
 
     private CompilationDto getCompilationDto(Compilations compilations) {
+
         List<String> uris = compilations.getEvents().stream()
                 .map(event1 -> "/events/" + event1.getId()).collect(Collectors.toList());
 
         List<ViewRequst> viewReqest = requestRepisotory.findViewReqest(compilations.getEvents(),
                 StatusRequest.CONFIRMED);
-
-        String stringStart = LocalDateTime.MIN.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        String stringEnd = LocalDateTime.MAX.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        // Запрос к базе данных статитики
-        List<ViewStat> viewStatList = (List<ViewStat>) statisticClient.getAllStatistic(stringStart,
-                stringEnd, uris, false);
-
+        List<ViewStat> viewStatList = statisticClient.getAllStatistic(stringStart, stringEnd, uris, true);
+        long views;
+        if (viewStatList.size() == 0) {
+            views = 0;
+        } else {
+            views = viewStatList.stream().mapToLong(value -> value.getHits()).sum();
+        }
         Map<Integer, EventShortDto> eventShortDtos = eventsMapper.toPublicEventMap(compilations.getEvents(),
                 viewStatList, viewReqest);
 

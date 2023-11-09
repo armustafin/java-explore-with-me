@@ -10,6 +10,7 @@ import ru.practikum.explore.events.dto.StatusEvent;
 import ru.practikum.explore.events.repesitory.EventsRepisotory;
 import ru.practikum.explore.exception.ConflictException;
 import ru.practikum.explore.exception.InvalidExistException;
+import ru.practikum.explore.exception.InvalidRequestException;
 import ru.practikum.explore.requests.dto.ParticipationRequestDto;
 import ru.practikum.explore.requests.dto.Request;
 import ru.practikum.explore.requests.dto.RequestMapper;
@@ -46,6 +47,9 @@ public class RequestServiceDao implements RequestService {
     public ParticipationRequestDto addRequest(Integer userId, Integer eventId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new InvalidExistException("User with id=" + userId + " was not found"));
+        if (eventId == null) {
+            throw new InvalidRequestException("not exist required query param");
+        }
         Event event = eventsRepisotory.findById(eventId)
                 .orElseThrow(() -> new InvalidExistException("Event with id=" + eventId + " was not found"));
         //  нельзя добавить повторный запрос (Ожидается код ошибки 409)
@@ -73,11 +77,12 @@ public class RequestServiceDao implements RequestService {
         // автоматически перейти в состояние подтвержденного
 
         Request requster = new Request();
-        if (event.getRequestModeration()) {
-            requster.setStatus(StatusRequest.PENDING);
-        } else {
+        if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
             requster.setStatus(StatusRequest.CONFIRMED);
+        } else {
+            requster.setStatus(StatusRequest.PENDING);
         }
+
         requster.setRequester(user);
         requster.setCreated(LocalDateTime.now());
         requster.setEvent(event);

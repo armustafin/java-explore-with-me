@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface RequestRepisotory extends JpaRepository<Request, Integer>, QuerydslPredicateExecutor<Request> {
 
-    @Query("select req.event.id, count(req.id) " +
+    @Query("select req.event.id As event, count(req.id) As hit " +
             "from Request as req " +
             "where (req.event IN (:events) AND (req.status = :sr) )" +
             "group by req.event  ")

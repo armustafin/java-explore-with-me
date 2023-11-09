@@ -1,8 +1,8 @@
 package ru.practicum.explore.stat.controller;
 
+import dto.ViewStat;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,18 +30,18 @@ public class StatController {
     private static final String FORMAT_DATE = "yyyy-MM-dd HH:mm:ss";
 
     @GetMapping("/stats")
-    public ResponseEntity<Object> getAllStatistic(@RequestParam
-                                                  @DateTimeFormat(pattern = FORMAT_DATE) @Valid LocalDateTime start,
-                                                  @DateTimeFormat(pattern = FORMAT_DATE) @Valid @RequestParam LocalDateTime end,
-                                                  @RequestParam List<String> uris,
-                                                  @RequestParam Boolean unique) {
+    public List<ViewStat> getAllStatistic(@RequestParam
+                                                          @DateTimeFormat(pattern = FORMAT_DATE) @Valid LocalDateTime start,
+                                          @DateTimeFormat(pattern = FORMAT_DATE) @Valid @RequestParam LocalDateTime end,
+                                          @RequestParam List<String> uris,
+                                          @RequestParam Boolean unique) {
 
         log.info("Get statics with next parametrs start {}, end={}, uris={}, uniqui={}", start, end, uris, unique);
         return statisticClient.getAllStatistic(start.toString(), end.toString(), uris, unique);
     }
 
     @PostMapping("/hit")
-    public ResponseEntity<Object> create(@RequestBody @Valid StatDto statDto) {
-        return statisticClient.create(statDto);
+    public void create(@RequestBody @Valid StatDto statDto) {
+         statisticClient.create(statDto);
     }
 }

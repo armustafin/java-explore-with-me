@@ -1,12 +1,7 @@
 package ru.practikum.explore.requests.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+public interface ViewRequst {
+    Integer getEvent();
 
-@Getter
-@Setter
-public class ViewRequst {
-    private Integer event;
-    private int hit;
-
+    int getHit();
 }

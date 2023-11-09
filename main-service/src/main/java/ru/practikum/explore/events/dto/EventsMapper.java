@@ -30,7 +30,7 @@ public class EventsMapper {
     }
 
     private EventShortDto toMapperShort(Event event, List<ViewStat> viewStats, List<ViewRequst> viewRequsts) {
-        int views = 0;
+        long views = 0;
         int confirmedRequests = 0;
         EventShortDto eventShortDto = new EventShortDto();
         eventShortDto.setAnnotation(event.getAnnotation());
@@ -38,7 +38,8 @@ public class EventsMapper {
         eventShortDto.setEventDate(event.getEventDate());
         eventShortDto.setInitiator(new UserShortDto(event.getInitiator().getId(), event.getInitiator().getName()));
         eventShortDto.setTitle(event.getTitle());
-        eventShortDto.setPaid(event.getPaid());
+        eventShortDto.setPaid(event.isPaid());
+        eventShortDto.setId(event.getId());
         String uri = "/events/" + event.getId();
         for (ViewStat vs : viewStats) {
             if (appName.equals(vs.getApp()) && vs.getUri().equals(uri)) {
@@ -96,29 +97,39 @@ public class EventsMapper {
         event.setCreatedOn(LocalDateTime.now());
         event.setLocation(newEventDto.getLocation());
         event.setState(StatusEvent.PENDING);
+        if (newEventDto.getRequestModeration() != null) {
+            event.setRequestModeration(newEventDto.getRequestModeration());
+        } else {
+            event.setRequestModeration(true);
+        }
         event.setParticipantLimit(newEventDto.getParticipantLimit());
-        event.setRequestModeration(newEventDto.getRequestModeration());
+
         event.setAnnotation(newEventDto.getAnnotation());
-        event.setPaid(newEventDto.getPaid());
+        if (newEventDto.getPaid() != null) {
+            event.setPaid(newEventDto.getPaid());
+        } else {
+            event.setPaid(false);
+        }
+
         event.setCategory(category);
         event.setInitiator(user);
         event.setTitle(newEventDto.getTitle());
         return event;
     }
 
-    public EventFullDto toFullEventDto(Event event, Integer views, Integer confirmedRequests) {
+    public EventFullDto toFullEventDto(Event event, long views, Integer confirmedRequests) {
         EventFullDto fullDto = new EventFullDto();
         fullDto.setId(event.getId());
         fullDto.setDescription(event.getDescription());
         fullDto.setEventDate(event.getEventDate());
-        fullDto.setCreateOn(event.getCreatedOn());
-        fullDto.setLocation(event.getLocation());
+        fullDto.setCreatedOn(event.getCreatedOn());
+        fullDto.setLocation(toLocationDto(event.getLocation()));
         fullDto.setConfirmedRequests(confirmedRequests);
         fullDto.setState(event.getState());
         fullDto.setParticipantLimit(event.getParticipantLimit());
         fullDto.setRequestModeration(event.getRequestModeration());
         fullDto.setAnnotation(event.getAnnotation());
-        fullDto.setPaid(event.getPaid());
+        fullDto.setPaid(event.isPaid());
         fullDto.setCategory(new CategoryDto(event.getCategory().getId(), event.getCategory().getName()));
         fullDto.setInitiator(new UserShortDto(event.getInitiator().getId(), event.getInitiator().getName()));
         fullDto.setTitle(event.getTitle());
@@ -131,14 +142,14 @@ public class EventsMapper {
     }
 
     public EventFullDto toMapperFull(Event event, List<ViewStat> viewStats, List<ViewRequst> viewRequsts) {
-        int views = 0;
+        long views = 0;
         int confirmedRequests = 0;
         EventFullDto fullDto = new EventFullDto();
         fullDto.setId(event.getId());
         fullDto.setDescription(event.getDescription());
         fullDto.setEventDate(event.getEventDate());
-        fullDto.setCreateOn(event.getCreatedOn());
-        fullDto.setLocation(event.getLocation());
+        fullDto.setCreatedOn(event.getCreatedOn());
+        fullDto.setLocation(toLocationDto(event.getLocation()));
         String uri = "/events/" + event.getId();
         for (ViewStat vs : viewStats) {
             if (appName.equals(vs.getApp()) && vs.getUri().equals(uri)) {
@@ -159,10 +170,17 @@ public class EventsMapper {
         fullDto.setParticipantLimit(event.getParticipantLimit());
         fullDto.setRequestModeration(event.getRequestModeration());
         fullDto.setAnnotation(event.getAnnotation());
-        fullDto.setPaid(event.getPaid());
+        fullDto.setPaid(event.isPaid());
         fullDto.setCategory(new CategoryDto(event.getCategory().getId(), event.getCategory().getName()));
         fullDto.setInitiator(new UserShortDto(event.getInitiator().getId(), event.getInitiator().getName()));
         fullDto.setTitle(event.getTitle());
         return fullDto;
+    }
+
+    private LocationDto toLocationDto(Location location) {
+        LocationDto locationDto = new LocationDto();
+        locationDto.setLat(location.getLat());
+        locationDto.setLon(location.getLon());
+        return locationDto;
     }
 }

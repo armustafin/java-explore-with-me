@@ -3,6 +3,7 @@ package ru.practikum.explore.events.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practikum.explore.events.dto.*;
@@ -20,15 +21,19 @@ import java.util.List;
 @RequestMapping("/admin/events")
 public class AdminEvientController {
     private final EventsService eventsService;
+    private static final String FORMAT_DATE = "yyyy-MM-dd HH:mm:ss";
 
     @GetMapping
-    public List<EventFullDto> getAllByAdmin(@RequestParam(required = false) List<Integer> users,
-                                            @RequestParam(required = false) List<StatusEvent> states,
-                                            @RequestParam(required = false) List<Integer> categories,
-                                            @RequestParam(required = false) LocalDateTime rangeStart,
-                                            @RequestParam(required = false) LocalDateTime rangeEnd,
-                                            @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
-                                            @Positive @RequestParam(defaultValue = "10") Integer size) {
+    @ResponseStatus(HttpStatus.OK)
+    public List<EventFullDto> getAllByAdminWithParametr(@RequestParam(required = false) List<Integer> users,
+                                                        @RequestParam(required = false) List<StatusEvent> states,
+                                                        @RequestParam(required = false) List<Integer> categories,
+                                                        @DateTimeFormat(pattern = FORMAT_DATE)
+                                                        @RequestParam(required = false) LocalDateTime rangeStart,
+                                                        @DateTimeFormat(pattern = FORMAT_DATE)
+                                                        @RequestParam(required = false) LocalDateTime rangeEnd,
+                                                        @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
+                                                        @Positive @RequestParam(defaultValue = "10") Integer size) {
 
         // создать класс евенты парам
         EventsAdminParam eventsParam = new EventsAdminParam();
@@ -42,7 +47,6 @@ public class AdminEvientController {
     }
 
     @PatchMapping("/{eventId}")
-    @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto patchEventAdmin(@PathVariable Integer eventId,
                                         @Valid @RequestBody UpdateEventAdminRequest up) {
 

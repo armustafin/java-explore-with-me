@@ -3,6 +3,7 @@ package ru.practikum.explore.events.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practikum.explore.events.dto.*;
 import ru.practikum.explore.events.service.EventsService;
@@ -31,6 +32,7 @@ public class EventPrivateController {
     }
 
     @PostMapping("/{userId}/events")
+    @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto addEvent(@PathVariable Integer userId,
                                  @Valid @RequestBody NewEventDto event) {
         // создать класс евенты парам
@@ -60,6 +62,7 @@ public class EventPrivateController {
     }
 
     @PatchMapping("/{userId}/events/{eventId}/requests")
+    @ResponseStatus(HttpStatus.CREATED)
     public EventRequestStatusUpdateResult patchRequestsByEvent(@PathVariable Integer userId,
                                                                @PathVariable Integer eventId,
                                                                @Valid @RequestBody EventRequestStatusUpdateRequest ev) {

@@ -18,13 +18,13 @@ public class EventFullDto {
     private CategoryDto category;
     private int confirmedRequests;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createOn;
+    private LocalDateTime createdOn;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     private UserShortDto initiator;
     @Size(min = 20, max = 7000)
     private String description;
-    private Location location;
+    private LocationDto location;
     private Boolean paid;
     private Boolean requestModeration;
     private int participantLimit;
@@ -33,5 +33,5 @@ public class EventFullDto {
     @Size(min = 3, max = 120)
     private String title;
     private StatusEvent state;
-    private int views;
+    private long views;
 }

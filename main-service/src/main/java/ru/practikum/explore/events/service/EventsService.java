@@ -1,12 +1,12 @@
 package ru.practikum.explore.events.service;
 
 import org.springframework.data.domain.PageRequest;
-import ru.practikum.explore.categories.dto.Category;
 import ru.practikum.explore.events.dto.*;
 import ru.practikum.explore.requests.dto.EventRequestStatusUpdateRequest;
 import ru.practikum.explore.requests.dto.EventRequestStatusUpdateResult;
 import ru.practikum.explore.requests.dto.ParticipationRequestDto;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface EventsService {
@@ -25,7 +25,7 @@ public interface EventsService {
 
     EventRequestStatusUpdateResult patchRequestsByEvent(Integer userId, Integer eventId, EventRequestStatusUpdateRequest ev);
 
-    Category getbyId(Integer catId);
+    EventFullDto getbyId(Integer catId, HttpServletRequest request);
 
     List<EventFullDto> getAllByAdmin(EventsAdminParam eventsParam, PageRequest of);
 

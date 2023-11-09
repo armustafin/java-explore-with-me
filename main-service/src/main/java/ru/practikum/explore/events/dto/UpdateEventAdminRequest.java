@@ -17,7 +17,7 @@ public class UpdateEventAdminRequest {
     private Integer category;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
-    private Location location;
+    private LocationDto location;
     private Boolean paid;
     private Boolean requestModeration;
     private Integer participantLimit;

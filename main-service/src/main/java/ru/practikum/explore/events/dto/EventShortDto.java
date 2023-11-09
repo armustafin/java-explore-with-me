@@ -31,12 +31,12 @@ public class EventShortDto {
     private String title;
 
     private boolean paid;
-    private int views;
+    private long views;
 
     public static final Comparator<EventShortDto> viewsComparator = new Comparator<EventShortDto>() {
         @Override
         public int compare(EventShortDto ev1, EventShortDto ev2) {
-            return ev1.getViews() - ev2.getViews();
+            return (int) (ev1.getViews() - ev2.getViews());
         }
     };
 

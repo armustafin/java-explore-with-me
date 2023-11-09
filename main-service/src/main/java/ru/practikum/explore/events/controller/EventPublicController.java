@@ -3,8 +3,9 @@ package ru.practikum.explore.events.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-import ru.practikum.explore.categories.dto.Category;
+import ru.practikum.explore.events.dto.EventFullDto;
 import ru.practikum.explore.events.dto.EventShortDto;
 import ru.practikum.explore.events.dto.EventsParam;
 import ru.practikum.explore.events.dto.SortEvent;
@@ -23,12 +24,15 @@ import java.util.List;
 @RequestMapping("/events")
 public class EventPublicController {
     private final EventsService eventsService;
+    private static final String FORMAT_DATE = "yyyy-MM-dd HH:mm:ss";
 
     @GetMapping("")
     public List<EventShortDto> getAll(@RequestParam(required = false) String text,
                                       @RequestParam(required = false) List<Integer> categories,
                                       @RequestParam(required = false) Boolean paid,
+                                      @DateTimeFormat(pattern = FORMAT_DATE)
                                       @RequestParam(required = false) LocalDateTime rangeStart,
+                                      @DateTimeFormat(pattern = FORMAT_DATE)
                                       @RequestParam(required = false) LocalDateTime rangeEnd,
                                       @RequestParam(defaultValue = "EVENT_DATE") SortEvent sort,
                                       @RequestParam(defaultValue = "false") boolean onlyAvailable,
@@ -38,21 +42,21 @@ public class EventPublicController {
 
         // создать класс евенты парам
         EventsParam eventsParam = new EventsParam();
-                eventsParam.setIp(request.getRemoteAddr());
+        eventsParam.setIp(request.getRemoteAddr());
 
-                eventsParam.setPaid(paid);
-                eventsParam.setUri(request.getRequestURI());
-                eventsParam.setSort(sort);
-                eventsParam.setCategories(categories);
-                eventsParam.setRangeStart(rangeStart);
-                eventsParam.setRangeEnd(rangeEnd);
-                eventsParam.setOnlyAvailable(onlyAvailable);
+        eventsParam.setPaid(paid);
+        eventsParam.setUri(request.getRequestURI());
+        eventsParam.setSort(sort);
+        eventsParam.setCategories(categories);
+        eventsParam.setRangeStart(rangeStart);
+        eventsParam.setRangeEnd(rangeEnd);
+        eventsParam.setOnlyAvailable(onlyAvailable);
 
         return eventsService.getAll(eventsParam, PageRequest.of(from / size, size));
     }
 
-    @GetMapping("/{catId}")
-    public Category getAll(@PathVariable Integer catId) {
-        return eventsService.getbyId(catId);
+    @GetMapping("/{id}")
+    public EventFullDto getbyId(@PathVariable Integer id,  HttpServletRequest request) {
+        return eventsService.getbyId(id, request);
     }
 }

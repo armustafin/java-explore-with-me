@@ -1,15 +1,21 @@
 package dto;
 
-public interface ViewStat {
-    String getApp();
 
-    void setApp(String app);
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-    String getUri();
+@Getter
+@Setter
+@NoArgsConstructor
+public class ViewStat {
+    private String app;
+    private String uri;
+    private long hits;
 
-    void setUri(String uri);
-
-    int getHits();
-
-    void setHits(int hit);
+    public ViewStat(String app, String uri, int hits) {
+        this.hits = hits;
+        this.app = app;
+        this.uri = uri;
+    }
 }

@@ -18,13 +18,13 @@ import java.util.List;
 public class CategoryPublicController {
     private final CategoryService categoryService;
 
-    @GetMapping("/categories")
+    @GetMapping()
     public List<Category> getAll(@PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                  @Positive @RequestParam(defaultValue = "10") Integer size) {
         return categoryService.getAll(PageRequest.of(from / size, size));
     }
 
-    @GetMapping("/categories/{catId}")
+    @GetMapping("/{catId}")
     public Category getAll(@PathVariable Integer catId) {
         return categoryService.getbyId(catId);
     }
