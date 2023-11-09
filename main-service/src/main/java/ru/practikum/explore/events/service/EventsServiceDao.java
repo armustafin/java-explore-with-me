@@ -116,7 +116,7 @@ public class EventsServiceDao implements EventsService {
 
         // Запрос к базе данных статитики
         List<ViewStat> viewStatList = statisticClient.getAllStatistic(stringStart,
-                stringEnd, uris, false);
+                stringEnd, uris, true);
         // Преоброзовать три списка в один через  маппер
         List<EventShortDto> eventShortDtos = eventsMapper.toPublicEventList(events, viewStatList, viewReqest);
         if (parametrs.isExistSort()) {
@@ -157,7 +157,7 @@ public class EventsServiceDao implements EventsService {
 
         // Запрос к базе данных статитики
         List<ViewStat> viewStatList = statisticClient.getAllStatistic(stringStart, stringEnd,
-                uris, false);
+                uris, true);
         List<EventShortDto> eventShortDtos = eventsMapper.toPublicEventList(events, viewStatList, viewReqest);
         Collections.sort(eventShortDtos, EventShortDto.dateComparator);
 
