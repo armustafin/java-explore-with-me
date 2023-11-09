@@ -40,8 +40,8 @@ public class CategoryServiceDao implements CategoryService {
     @Transactional(readOnly = false)
     @Override
     public Category add(NewCategoryDto categoryDto) {
-        if (categoryRepository.findByName(categoryDto.getName()) == null) {
-            throw new DataIntegrityViolationException("exis name!");
+        if (categoryRepository.findByName(categoryDto.getName()) != null) {
+            throw new DataIntegrityViolationException("exist name!");
         }
         return categoryRepository.save(categoryMapper.toCategory(categoryDto));
     }
@@ -60,8 +60,8 @@ public class CategoryServiceDao implements CategoryService {
     public Category patch(Integer catId, CategoryDto categoryDto) {
         Category category = categoryRepository.findById(catId)
                 .orElseThrow(() -> new InvalidExistException("Category with id=" + catId + " was not found="));
-        if (categoryRepository.findByName(categoryDto.getName()) == null) {
-            throw new DataIntegrityViolationException("exis name!");
+        if (categoryRepository.findByName(categoryDto.getName()) != null) {
+            throw new DataIntegrityViolationException("exist name!");
         }
         category.setName(categoryDto.getName());
         return categoryRepository.save(category);
