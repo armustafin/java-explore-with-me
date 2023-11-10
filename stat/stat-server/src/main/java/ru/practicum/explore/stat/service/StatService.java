@@ -9,5 +9,5 @@ public interface StatService {
 
     StatDto create(StatDto statDto);
 
-    List<ViewStat> getAllStatistics(LocalDateTime start, LocalDateTime end,List<String> uris, Boolean unique);
+    List<ViewStat> getAllStatistics(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique);
 }

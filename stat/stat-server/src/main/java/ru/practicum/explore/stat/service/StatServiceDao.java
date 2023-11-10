@@ -13,6 +13,7 @@ import ru.practicum.explore.stat.repository.StatRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,11 +40,19 @@ public class StatServiceDao implements StatService {
 
     @Override
     public List<ViewStat> getAllStatistics(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        List<ViewStat> result;
+        List<Object[]> listObject;
+        List<ViewStat> result = new ArrayList<>();
+
         if (unique) {
-            result = statRepository.getAllStatistic(start, end, uris);
+            listObject = statRepository.getAllStatistic(start, end, uris);
+            for (Object[] obj : listObject) {
+                result.add(new ViewStat((String) (obj[0]), (String) (obj[1]), Integer.parseInt(obj[2].toString())));
+            }
         } else {
-            result = statRepository.getAllStatisticNonUnique(start, end, uris);
+            listObject = statRepository.getAllStatisticNonUnique(start, end, uris);
+            for (Object[] obj : listObject) {
+                result.add(new ViewStat((String) (obj[0]), (String) (obj[1]), Integer.parseInt(obj[2].toString())));
+            }
         }
         return result;
     }
