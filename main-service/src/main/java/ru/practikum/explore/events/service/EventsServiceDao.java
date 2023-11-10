@@ -3,6 +3,7 @@ package ru.practikum.explore.events.service;
 
 import com.querydsl.core.BooleanBuilder;
 
+import com.querydsl.jpa.JPAExpressions;
 import dto.StatDto;
 import dto.ViewStat;
 import lombok.RequiredArgsConstructor;
@@ -101,12 +102,12 @@ public class EventsServiceDao implements EventsService {
         }
         booleanBuilder.and(event.eventDate.after(rangeStart)).and(event.eventDate.before(rangeEnd));
 
-
         if (parametrs.isExistOnlyAviable()) {
-            booleanBuilder.and(event.participantLimit.goe(request.id.count()).or(event.participantLimit.eq(0)));
-
+            booleanBuilder.and(event.participantLimit.goe(JPAExpressions.select(request.id.countDistinct())
+                    .from(request).where(request.status.eq(StatusRequest.CONFIRMED)
+                            .and(request.event.eq(event)))).or(event.participantLimit.eq(0)));
         }
-        List<Event> events = eventsRepisotory.findAll(booleanBuilder, of).getContent();
+        List<Event> events = eventsRepisotory.findAll(booleanBuilder.getValue(), of).getContent();
 
         List<String> uris = events.stream().map(event1 -> "/events/" + event1.getId()).collect(Collectors.toList());
 
