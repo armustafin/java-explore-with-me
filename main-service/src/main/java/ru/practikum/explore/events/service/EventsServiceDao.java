@@ -104,7 +104,7 @@ public class EventsServiceDao implements EventsService {
         if (parametrs.isExistOnlyAviable()) {
             booleanBuilder.and(event.participantLimit.goe(JPAExpressions.select(request.id.countDistinct())
                     .from(request).where(request.status.eq(StatusRequest.CONFIRMED)
-                            .and(request.event.eq(event))))).or(event.participantLimit.eq(0));
+                            .and(request.event.eq(event)))).or(event.participantLimit.eq(0)));
 
         }
 
