@@ -2,7 +2,6 @@ package ru.practikum.explore.events.service;
 
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.jpa.JPAExpressions;
 
 import dto.StatDto;
 import dto.ViewStat;
