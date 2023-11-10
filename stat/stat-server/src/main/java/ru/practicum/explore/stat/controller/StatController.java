@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class StatController {
-    private static final String FORMAT_DATE = "yyyy-MM-ddHH:mm:ss";
+    private static final String FORMAT_DATE = "yyyy-MM-dd HH:mm:ss";
 
     private final StatService statService;
 
