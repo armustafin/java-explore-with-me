@@ -39,10 +39,10 @@ public class StatController {
 
         try {
             startDate = LocalDateTime.parse(start, DateTimeFormatter.ofPattern(FORMAT_DATE));
-            endDate =   LocalDateTime.parse(end, DateTimeFormatter.ofPattern(FORMAT_DATE));
-        } catch (Exception e ) {
+            endDate = LocalDateTime.parse(end, DateTimeFormatter.ofPattern(FORMAT_DATE));
+        } catch (Exception e) {
             startDate = LocalDateTime.parse(start, DateTimeFormatter.ofPattern(FORMAT_DATE_));
-            endDate =   LocalDateTime.parse(end, DateTimeFormatter.ofPattern(FORMAT_DATE_));
+            endDate = LocalDateTime.parse(end, DateTimeFormatter.ofPattern(FORMAT_DATE_));
         }
         return statService.getAllStatistics(startDate, endDate, uries, unique);
     }
