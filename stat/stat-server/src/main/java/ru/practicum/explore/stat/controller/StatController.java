@@ -5,6 +5,7 @@ import dto.StatDto;
 import dto.ViewStat;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.stat.service.StatService;
 
@@ -33,6 +34,7 @@ public class StatController {
     }
 
     @PostMapping("/hit")
+    @ResponseStatus(HttpStatus.CREATED)
     public StatDto create(@RequestBody StatDto statDto) {
         return statService.create(statDto);
     }

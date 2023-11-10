@@ -13,11 +13,7 @@ import ru.practicum.explore.stat.repository.StatRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 
 @Service
 @Primary
@@ -43,39 +39,11 @@ public class StatServiceDao implements StatService {
 
     @Override
     public List<ViewStat> getAllStatistics(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        List<ViewStat> result = new ArrayList<>();
-        Map<String, ViewStat> res = new HashMap<>();
-
-        List<Stat> list = statRepository.findAllByDateTimeIncomeBetweenAndUriIn(start, end, uris);
-        String uuid;
+        List<ViewStat> result;
         if (unique) {
-            for (Stat el : list) {
-                uuid = el.getUri() + el.getIp();
-                ViewStat vs = res.get(uuid);
-                if (vs == null) {
-                    vs = result.stream().filter(f -> f.getUri().equals(el.getUri())).findFirst()
-                            .orElse(null);
-                    if (vs == null) {
-                        vs = new ViewStat(el.getApp(), el.getUri(), 1);
-                        result.add(vs);
-                        res.put(uuid, vs);
-                    } else {
-                        vs.setHits(vs.getHits() + 1);
-                    }
-                }
-            }
+            result = statRepository.getAllStatistic(start, end, uris);
         } else {
-            for (Stat el : list) {
-                uuid = el.getUri();
-                ViewStat vs = res.get(uuid);
-                if (vs == null) {
-                    vs = new ViewStat(el.getApp(), el.getUri(), 1);
-                    result.add(vs);
-                    res.put(uuid, vs);
-                } else {
-                    vs.setHits(vs.getHits() + 1);
-                }
-            }
+            result = statRepository.getAllStatisticNonUnique(start, end, uris);
         }
         return result;
     }

@@ -21,7 +21,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.TcpClient;
+import ru.practicum.explore.stat.exception.InvalidRequestException;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -29,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class StatisticClient {
     private String serverUrl;
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final WebClient webClient;
     public static final int TIMEOUT = 1000;
 
@@ -53,6 +57,13 @@ public class StatisticClient {
     }
 
     public List<ViewStat> getAllStatistic(String start, String end, @RequestParam  List<String> uris, Boolean unique) {
+        LocalDateTime startDate = LocalDateTime.parse(start, DATE_TIME_FORMATTER);
+        LocalDateTime endDate =   LocalDateTime.parse(end, DATE_TIME_FORMATTER);
+        if (startDate != null && endDate != null) {
+            if (startDate.isAfter(endDate)) {
+                throw new InvalidRequestException("Error request start after end");
+            }
+        }
         String response =
                 webClient
                         .get()
