@@ -31,7 +31,7 @@ public class StatController {
 
     @GetMapping("/stats")
     public List<ViewStat> getAllStatistic(@RequestParam
-                                                          @DateTimeFormat(pattern = FORMAT_DATE) @Valid LocalDateTime start,
+                                          @DateTimeFormat(pattern = FORMAT_DATE) @Valid LocalDateTime start,
                                           @DateTimeFormat(pattern = FORMAT_DATE) @Valid @RequestParam LocalDateTime end,
                                           @RequestParam List<String> uris,
                                           @RequestParam Boolean unique) {
@@ -42,6 +42,6 @@ public class StatController {
 
     @PostMapping("/hit")
     public void create(@RequestBody @Valid StatDto statDto) {
-         statisticClient.create(statDto);
+        statisticClient.create(statDto);
     }
 }

@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class StatController {
     private static final String FORMAT_DATE = "yyyy-MM-dd HH:mm:ss";
+    private static final String FORMAT_DATE_ = "yyyy-MM-ddHH:mm:ss";
 
     private final StatService statService;
 
@@ -27,14 +28,23 @@ public class StatController {
                                           @RequestParam String end,
                                           @RequestParam(required = false) List<String> uris,
                                           @RequestParam(required = false, defaultValue = "false") Boolean unique) {
-
+        LocalDateTime startDate;
+        LocalDateTime endDate;
         List<String> uries = null;
+
         if (uris != null) {
             uries = uris.stream().map(str -> str.replaceAll("^\\[|\\]$", ""))
                     .collect(Collectors.toList());
         }
-        return statService.getAllStatistics(LocalDateTime.parse(start, DateTimeFormatter.ofPattern(FORMAT_DATE)),
-                LocalDateTime.parse(end, DateTimeFormatter.ofPattern(FORMAT_DATE)), uries, unique);
+
+        try {
+            startDate = LocalDateTime.parse(start, DateTimeFormatter.ofPattern(FORMAT_DATE));
+            endDate =   LocalDateTime.parse(end, DateTimeFormatter.ofPattern(FORMAT_DATE));
+        } catch (Exception e ) {
+            startDate = LocalDateTime.parse(start, DateTimeFormatter.ofPattern(FORMAT_DATE_));
+            endDate =   LocalDateTime.parse(end, DateTimeFormatter.ofPattern(FORMAT_DATE_));
+        }
+        return statService.getAllStatistics(startDate, endDate, uries, unique);
     }
 
     @PostMapping("/hit")

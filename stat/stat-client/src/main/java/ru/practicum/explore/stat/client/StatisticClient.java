@@ -64,15 +64,12 @@ public class StatisticClient {
                 throw new InvalidRequestException("Error request start after end");
             }
         }
-
-        String startP = startDate.format(DateTimeFormatter.ofPattern("yyyy-MM-ddHH:mm:ss"));
-        String endP = endDate.format(DateTimeFormatter.ofPattern("yyyy-MM-ddHH:mm:ss"));
         String response = webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/stats/")
-                        .queryParam("start", startP)
-                        .queryParam("end", endP)
+                        .queryParam("start", start)
+                        .queryParam("end", end)
                         .queryParam("uris", uris)
                         .queryParam("unique", unique)
                         .build())
