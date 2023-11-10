@@ -387,13 +387,13 @@ public class EventsServiceDao implements EventsService {
         if (event.getState() != StatusEvent.PUBLISHED) {
             throw new InvalidExistException("Status not Published");
         }
-        EventFullDto eventFullDto = getEventFullDto(event);
         StatDto statDto = new StatDto();
         statDto.setUri(getStringUri(event));
         statDto.setIp(request.getRemoteAddr());
         statDto.setTimeStamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         statDto.setApp(appName);
         statisticClient.create(statDto);
+        EventFullDto eventFullDto = getEventFullDto(event);
         return eventFullDto;
     }
 
