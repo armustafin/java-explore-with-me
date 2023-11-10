@@ -106,7 +106,7 @@ public class EventsServiceDao implements EventsService {
             booleanBuilder.and(event.participantLimit.goe(request.id.count()).or(event.participantLimit.eq(0)));
 
         }
-        List<Event> events = eventsRepisotory.findAll(booleanBuilder.getValue(), of).getContent();
+        List<Event> events = eventsRepisotory.findAll(booleanBuilder, of).getContent();
 
         List<String> uris = events.stream().map(event1 -> "/events/" + event1.getId()).collect(Collectors.toList());
 
