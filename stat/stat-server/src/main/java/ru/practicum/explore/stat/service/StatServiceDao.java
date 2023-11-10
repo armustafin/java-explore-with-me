@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.explore.stat.exception.InvalidRequestException;
 import ru.practicum.explore.stat.repository.Stat;
 import ru.practicum.explore.stat.repository.StatMapper;
 import ru.practicum.explore.stat.repository.StatRepository;
@@ -42,7 +43,11 @@ public class StatServiceDao implements StatService {
     public List<ViewStat> getAllStatistics(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         List<Object[]> listObject;
         List<ViewStat> result = new ArrayList<>();
-
+        if (start != null && end != null) {
+            if (start.isAfter(end)) {
+                throw new InvalidRequestException("Error request start after end");
+            }
+        }
         if (unique) {
             listObject = statRepository.getAllStatistic(start, end, uris);
             for (Object[] obj : listObject) {

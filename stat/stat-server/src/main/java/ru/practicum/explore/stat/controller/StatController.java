@@ -18,22 +18,23 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class StatController {
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final String FORMAT_DATE = "yyyy-MM-ddHH:mm:ss";
 
     private final StatService statService;
 
     @GetMapping("/stats")
-    public List<ViewStat> getAllStatistic(@RequestParam String start, @RequestParam String end,
-                                          @RequestParam(required = false) String uris,
+    public List<ViewStat> getAllStatistic(@RequestParam String start,
+                                          @RequestParam String end,
+                                          @RequestParam(required = false) List<String> uris,
                                           @RequestParam(required = false, defaultValue = "false") Boolean unique) {
 
         List<String> uries = null;
         if (uris != null) {
-            uries = List.of(uris).stream().map(str -> str.replaceAll("^\\[|\\]$", ""))
+            uries = uris.stream().map(str -> str.replaceAll("^\\[|\\]$", ""))
                     .collect(Collectors.toList());
         }
-        return statService.getAllStatistics(LocalDateTime.parse(start, DATE_TIME_FORMATTER),
-                LocalDateTime.parse(end, DATE_TIME_FORMATTER), uries, unique);
+        return statService.getAllStatistics(LocalDateTime.parse(start, DateTimeFormatter.ofPattern(FORMAT_DATE)),
+                LocalDateTime.parse(end, DateTimeFormatter.ofPattern(FORMAT_DATE)), uries, unique);
     }
 
     @PostMapping("/hit")
