@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -57,9 +56,9 @@ public class StatisticClient {
         this.serverUrl = serverUrl;
     }
 
-    public List<ViewStat> getAllStatistic(String start, String end, @RequestParam  List<String> uris, Boolean unique) {
+    public List<ViewStat> getAllStatistic(String start, String end, @RequestParam List<String> uris, Boolean unique) {
         LocalDateTime startDate = LocalDateTime.parse(start, DATE_TIME_FORMATTER);
-        LocalDateTime endDate =   LocalDateTime.parse(end, DATE_TIME_FORMATTER);
+        LocalDateTime endDate = LocalDateTime.parse(end, DATE_TIME_FORMATTER);
         if (startDate != null && endDate != null) {
             if (startDate.isAfter(endDate)) {
                 throw new InvalidRequestException("Error request start after end");
@@ -86,7 +85,8 @@ public class StatisticClient {
 
         List<ViewStat> list;
         try {
-            list = mapper.readValue(response, new TypeReference<List<ViewStat>>(){});
+            list = mapper.readValue(response, new TypeReference<List<ViewStat>>() {
+            });
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
