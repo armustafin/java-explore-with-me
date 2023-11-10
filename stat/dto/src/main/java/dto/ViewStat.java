@@ -1,6 +1,8 @@
 package dto;
 
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class ViewStat {
     private String app;
     private String uri;
