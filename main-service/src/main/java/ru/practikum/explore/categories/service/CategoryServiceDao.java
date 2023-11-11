@@ -32,15 +32,14 @@ public class CategoryServiceDao implements CategoryService {
 
     @Override
     public Category getbyId(Integer catId) {
-        Category category = categoryRepository.findById(catId)
+        return categoryRepository.findById(catId)
                 .orElseThrow(() -> new InvalidExistException("Category with id=" + catId + " was not found="));
-        return category;
     }
 
     @Transactional(readOnly = false)
     @Override
     public Category add(NewCategoryDto categoryDto) {
-        if (categoryRepository.findByName(categoryDto.getName()) != null) {
+        if (categoryRepository.existsByName(categoryDto.getName())) {
             throw new DataIntegrityViolationException("exist name!");
         }
         return categoryRepository.save(categoryMapper.toCategory(categoryDto));

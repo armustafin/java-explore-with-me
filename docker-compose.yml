@@ -50,11 +50,3 @@ services:
      POSTGRES_DB: ewm
      POSTGRES_USER: postgres
      POSTGRES_PASSWORD: password
-
-
-
-
-
-
-
-

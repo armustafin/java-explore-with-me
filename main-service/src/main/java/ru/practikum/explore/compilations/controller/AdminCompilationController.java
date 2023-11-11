@@ -22,14 +22,12 @@ public class AdminCompilationController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public CompilationDto addCompilation(@Valid @RequestBody NewCompilationDto dto) {
-        // создать класс евенты парам
         return compilationService.addCompilation(dto);
     }
 
     @DeleteMapping("/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCompilation(@PathVariable Integer compId) {
-        // создать класс евенты парам
         compilationService.deleteCompilation(compId);
     }
 
@@ -37,7 +35,6 @@ public class AdminCompilationController {
     @ResponseStatus(HttpStatus.OK)
     public CompilationDto patchCompilation(@Valid @RequestBody UpdateCompilationRequest dto,
                                            @PathVariable Integer compId) {
-        // создать класс евенты парам
         return compilationService.patchCompilation(compId, dto);
     }
 }

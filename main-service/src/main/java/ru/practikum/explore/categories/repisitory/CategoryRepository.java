@@ -7,5 +7,7 @@ import ru.practikum.explore.categories.dto.Category;
 
 public interface CategoryRepository extends JpaRepository<Category, Integer>, QuerydslPredicateExecutor<Category> {
 
+    boolean existsByName(String name);
+
     Category findByName(String name);
 }

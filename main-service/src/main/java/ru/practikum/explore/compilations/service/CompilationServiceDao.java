@@ -4,7 +4,7 @@ import com.querydsl.core.BooleanBuilder;
 import dto.ViewStat;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -21,19 +21,20 @@ import ru.practikum.explore.requests.dto.StatusRequest;
 import ru.practikum.explore.requests.dto.ViewRequst;
 import ru.practikum.explore.requests.repisotory.RequestRepisotory;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @Primary
 @Slf4j
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class CompilationServiceDao implements CompilationService {
     private final String stringStart = "0001-01-01 00:00:00";
     private final String stringEnd = "3001-01-01 00:00:00";
 
-    @Autowired
     private final EventsRepisotory eventsRepisotory;
     private final CompilationRepisotory compilationRepisotory;
     private final EventsMapper eventsMapper;
@@ -41,6 +42,7 @@ public class CompilationServiceDao implements CompilationService {
     private final StatisticClient statisticClient;
 
     @Override
+    @Transactional(readOnly = true)
     public List<CompilationDto> getAll(boolean pinned, PageRequest of) {
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
@@ -73,6 +75,7 @@ public class CompilationServiceDao implements CompilationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CompilationDto getbyId(Integer compId) {
         Compilations compilations = compilationRepisotory.findById(compId)
                 .orElseThrow(() -> new InvalidExistException("Compilation with id=" + compId + " was not found"));
@@ -83,15 +86,12 @@ public class CompilationServiceDao implements CompilationService {
     @Override
     @Transactional
     public CompilationDto addCompilation(NewCompilationDto dto) {
-        List<Event> events = new ArrayList<>();
-        ;
         Compilations compilations = new Compilations();
         compilations.setTitle(dto.getTitle());
         compilations.setPinned(dto.isPinned());
         if (dto.getEvents() != null) {
-            events = eventsRepisotory.findAllById(dto.getEvents());
+            compilations.setEvents(eventsRepisotory.findAllById(dto.getEvents()));
         }
-        compilations.setEvents(events);
         compilationRepisotory.save(compilations);
         return getCompilationDto(compilations);
     }
@@ -132,12 +132,6 @@ public class CompilationServiceDao implements CompilationService {
         List<ViewRequst> viewReqest = requestRepisotory.findViewReqest(compilations.getEvents(),
                 StatusRequest.CONFIRMED);
         List<ViewStat> viewStatList = statisticClient.getAllStatistic(stringStart, stringEnd, uris, true);
-        long views;
-        if (viewStatList.size() == 0) {
-            views = 0;
-        } else {
-            views = viewStatList.stream().mapToLong(value -> value.getHits()).sum();
-        }
         Map<Integer, EventShortDto> eventShortDtos = eventsMapper.toPublicEventMap(compilations.getEvents(),
                 viewStatList, viewReqest);
 
