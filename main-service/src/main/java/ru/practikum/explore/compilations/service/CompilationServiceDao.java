@@ -21,6 +21,7 @@ import ru.practikum.explore.requests.dto.StatusRequest;
 import ru.practikum.explore.requests.dto.ViewRequst;
 import ru.practikum.explore.requests.repisotory.RequestRepisotory;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +92,8 @@ public class CompilationServiceDao implements CompilationService {
         compilations.setPinned(dto.isPinned());
         if (dto.getEvents() != null) {
             compilations.setEvents(eventsRepisotory.findAllById(dto.getEvents()));
+        } else {
+            compilations.setEvents(new ArrayList<>());
         }
         compilationRepisotory.save(compilations);
         return getCompilationDto(compilations);
