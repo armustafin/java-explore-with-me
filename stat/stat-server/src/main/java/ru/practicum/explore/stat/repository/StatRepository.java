@@ -1,26 +1,28 @@
 package ru.practicum.explore.stat.repository;
 
-import dto.ViewStat;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface StatRepository extends JpaRepository<Stat, Integer>, JpaSpecificationExecutor<Stat> {
+public interface StatRepository extends JpaRepository<Stat, Integer>, CrudRepository<Stat, Integer> {
 
-    @Query("select app as app, uri As uri, COUNT(distinct ip) AS hits " +
+    @Query(value = "select app, uri, COUNT(distinct ip) as hits  " +
             "from Stat " +
-            "where (dateTimeIncome BETWEEN :start AND :end) AND (uri IN :uris OR :uris = NULL) " +
+            "where (dateTimeIncome BETWEEN :start AND :end AND (uri IN :uris OR :uris IS NULL))  " +
             "GROUP BY app, uri " +
-            "ORDER BY COUNT(DISTINCT ip) DESC")
-    List<ViewStat> getAllStatistic(LocalDateTime start, LocalDateTime end, List<String> uris);
+            "ORDER BY hits DESC ")
+    List<Object[]> getAllStatistic(LocalDateTime start, LocalDateTime end, List<String> uris);
 
-    @Query("select ST.app AS app, ST.uri AS uri, COUNT(ST.id) AS hits " +
-            "from Stat AS ST " +
-            "where (ST.dateTimeIncome BETWEEN :start AND :end) AND (ST.uri IN :uris OR :uris = NULL) " +
-            "GROUP BY app, uri " +
-            "ORDER BY COUNT(ST.id) DESC")
-    List<ViewStat> getAllStatisticNonUnique(LocalDateTime start, LocalDateTime end, List<String> uris);
+    @Query(value = "select ST.app AS app, ST.uri As uri, COUNT(ST.id) AS hits " +
+            " from STATS  AS ST " +
+            " where (ST.INCOME_DATE BETWEEN :start AND :end) AND (ST.uri IN :uris OR :uris IS NULL) " +
+            " GROUP BY app, uri " +
+            "ORDER BY hits DESC ", nativeQuery = true)
+    List<Object[]> getAllStatisticNonUnique(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end,
+                                            @Param("uris") List<String> uris);
 }
+

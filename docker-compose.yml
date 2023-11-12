@@ -30,8 +30,23 @@ services:
     container_name:  ewm-service
     ports:
       - "8080:8080"
+    depends_on:
+      - ewm-db
+    environment:
+      - CLIENT_URL=http://stats-server:9090
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm:5432/ewm
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=ewm
 
-#  ewm-db:
-#    image: postgres:14-alpine
-#    container_name: ewm-db
-
+  ewm-db:
+   image: postgres:14-alpine
+   container_name: ewm
+   ports:
+     - "6543:5432"
+   volumes:
+    - ./main-service/src/main/resources/shema.sql:/docker-entrypoint-initdb.d/init.sql
+   environment:
+     POSTGRES_DB: ewm
+     POSTGRES_USER: postgres
+     POSTGRES_PASSWORD: password

@@ -12,11 +12,7 @@ public class StatMapper {
         stat.setApp(dto.getApp());
         stat.setIp(dto.getIp());
         stat.setUri(dto.getUri());
-        if (dto.getTimeStamp() == null) {
-            stat.setDateTimeIncome(LocalDateTime.now());
-        } else {
-            stat.setDateTimeIncome(dto.getTimeStamp());
-        }
+        stat.setDateTimeIncome(LocalDateTime.now());
         return stat;
     }
 }
