@@ -26,8 +26,8 @@ public class CategoryServiceDao implements CategoryService {
     private final CategoryMapper categoryMapper;
 
     @Override
-    public List<Category> getAll(PageRequest of) {
-        return categoryRepository.findAll(of).toList();
+    public List<Category> getAll(PageRequest pageRequest) {
+        return categoryRepository.findAll(pageRequest).toList();
     }
 
     @Override
