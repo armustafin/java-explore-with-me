@@ -54,8 +54,7 @@ public class CommentsServiseDao implements CommentsServise {
     @Override
     public CommentsShortDto getbyId(Integer id) {
         Comments com = commentsRepository.findById(id)
-                .orElseThrow(() -> new InvalidExistException("Comment with id=" + id + " was not found="));
-        ;
+                .orElseThrow(() -> new InvalidExistException("Comment with id=" + id + " was not found"));
         List<Response> responses = responseRepository.findAllByCommentIn(List.of(com));
         return commentMapper.toShort(com, responses);
     }

@@ -19,8 +19,6 @@ import ru.practikum.explore.comments.dto.ResponseDto;
 import ru.practikum.explore.comments.dto.ResponseNewDto;
 import ru.practikum.explore.comments.service.CommentsServise;
 
-
-
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -45,16 +43,14 @@ public class PrivateCommentsControl {
     @ResponseStatus(HttpStatus.CREATED)
     public CommentsShortDto addComments(@PathVariable Integer userId,
                                         @Valid @RequestBody CommentsNewDto commentsDto) {
-        // создать класс евенты парам
         return commentsServise.addComments(userId, commentsDto);
     }
 
     @PostMapping("/{userId}/comments/{commentsId}/response")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDto addRequest(@PathVariable Integer userId,
-                                       @PathVariable Integer commentsId,
-                                       @Valid @RequestBody ResponseNewDto responseDto) {
-        // создать класс евенты парам
+                                  @PathVariable Integer commentsId,
+                                  @Valid @RequestBody ResponseNewDto responseDto) {
         return commentsServise.addRequest(userId, commentsId, responseDto);
     }
 
@@ -63,7 +59,6 @@ public class PrivateCommentsControl {
     public CommentsShortDto patchComments(@PathVariable Integer userId,
                                           @PathVariable Integer commentsId,
                                           @Valid @RequestBody CommentsNewDto commentsDto) {
-        // создать класс евенты парам
         return commentsServise.patchComments(userId, commentsId, commentsDto);
     }
 
@@ -74,7 +69,6 @@ public class PrivateCommentsControl {
                                           @PathVariable Integer commentsId,
                                           @PathVariable Integer responseId,
                                           @Valid @RequestBody ResponseNewDto responseDto) {
-        // создать класс евенты парам
         return commentsServise.patchRequests(userId, commentsId, responseId, responseDto);
     }
 }

@@ -5,7 +5,6 @@ import ru.practikum.explore.categories.dto.CategoryDto;
 import ru.practikum.explore.events.dto.Event;
 import ru.practikum.explore.events.dto.EventDto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,12 +15,8 @@ public class CommentMapper {
         dto.setComment(comments.getComment());
         dto.setEventId(comments.getEvent().getId());
         dto.setId(comments.getId());
-        List<ResponseDto> responseDto = new ArrayList<>();
-        for (Response resp : responses) {
-            if (resp.getComment().getId() == comments.getId()) {
-                responseDto.add(toResponseDto(resp));
-            }
-        }
+        List<ResponseDto> responseDto = responses.stream().filter(com -> com.getComment().getId() == comments.getId())
+                .map(com ->toResponseDto(com)).collect(Collectors.toList());
         dto.setResponses(responseDto);
         return dto;
     }
