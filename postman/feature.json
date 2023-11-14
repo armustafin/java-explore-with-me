@@ -340,6 +340,124 @@
 					"response": []
 				},
 				{
+					"name": "Изменение отзыва",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const main = async () => {\r",
+									"    const api = new API(pm);\r",
+									"    const rnd = new RandomUtils();\r",
+									"    let event;\r",
+									"    try {\r",
+									"        \r",
+									"        const user = await api.addUser(rnd.getUser());  \r",
+									"        const user1 = await api.addUser(rnd.getUser());  \r",
+									"         pm.collectionVariables.set(\"uid\", user1.id);\r",
+									"        const category = await api.addCategory(rnd.getCategory());\r",
+									"        let event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+									"        pm.collectionVariables.set(\"userId\", user1.id);\r",
+									"       \r",
+									"        event = await api.publishEvent(event.id);\r",
+									"        \r",
+									"        let comment = await api.addComment(user1.id, {\"eventId\": event.id, \"comment\": \"new coomemnd\"});\r",
+									"        pm.collectionVariables.set('com', comment.id); \r",
+									"        response = {\"response\": \"sadklhglih;l\"}   \r",
+									"        userId = user.id;  \r",
+									"        let responseApi = await api.addResponse(userId,comment.id, response);\r",
+									"      pm.collectionVariables.set(\"userId\", userId);\r",
+									"       pm.collectionVariables.set(\"uid\", userId);\r",
+									"        pm.collectionVariables.set(\"resp\", responseApi.id);    \r",
+									"        response = {\"response\": \"test patch\"}   \r",
+									"\r",
+									"    } catch(err) {\r",
+									"        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+									"    }\r",
+									"\r",
+									"    pm.request.body.update({\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify(response),\r",
+									"        options: { raw: { language: 'json' } }\r",
+									"        });\r",
+									"};\r",
+									"\r",
+									"const interval = setInterval(() => {}, 1000);\r",
+									"\r",
+									"setTimeout(async () => \r",
+									"    {\r",
+									"        try {\r",
+									"            await main();\r",
+									"        } catch (e) {\r",
+									"            console.error(e);\r",
+									"        } finally {\r",
+									"            clearInterval(interval);\r",
+									"        }\r",
+									"    },  \r",
+									"    100 \r",
+									");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Ответ должен содержать код статуса 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{request_body}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/:userId/comments/:commentsId/response/:responseId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":userId",
+								"comments",
+								":commentsId",
+								"response",
+								":responseId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "{{uid}}"
+								},
+								{
+									"key": "commentsId",
+									"value": "{{com}}"
+								},
+								{
+									"key": "responseId",
+									"value": "{{resp}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Изменение комментария",
 					"event": [
 						{
@@ -501,8 +619,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Ответ должен содержать код статуса 200\", function () {\r",
-									"    pm.response.to.be.ok;    \r",
+									"pm.test(\"Ответ должен содержать код статуса 409 и данные в формате json\", function () {\r",
+									"    pm.response.to.have.status(409);\r",
+									"    pm.response.to.be.withBody;\r",
+									"    pm.response.to.be.json;\r",
 									"});\r",
 									"\r",
 									""
