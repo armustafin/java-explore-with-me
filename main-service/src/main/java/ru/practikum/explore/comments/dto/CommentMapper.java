@@ -16,7 +16,7 @@ public class CommentMapper {
         dto.setEventId(comments.getEvent().getId());
         dto.setId(comments.getId());
         List<ResponseDto> responseDto = responses.stream().filter(com -> com.getComment().getId() == comments.getId())
-                .map(com ->toResponseDto(com)).collect(Collectors.toList());
+                .map(com -> toResponseDto(com)).collect(Collectors.toList());
         dto.setResponses(responseDto);
         return dto;
     }
