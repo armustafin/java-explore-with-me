@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "38790313-0e9f-4734-8cdd-a87b3fffcc7c",
 		"name": "Test Explore With Me - Comment Copy",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "27667338"
 	},
 	"item": [
@@ -571,7 +571,7 @@
 									"        pm.collectionVariables.set(\"uid\", user1.id);\r",
 									"        const category = await api.addCategory(rnd.getCategory());\r",
 									"        let event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
-									"        pm.collectionVariables.set(\"userId\", user1.id);\r",
+									"      \r",
 									"       \r",
 									"        event = await api.publishEvent(event.id);\r",
 									"        let comment = await api.addComment(user1.id, {\"eventId\": event.id, \"comment\": \"new coomemnd\"});\r",
