@@ -67,3 +67,24 @@ CREATE TABLE IF NOT EXISTS Compilation_event
     CONSTRAINT fk_to_event FOREIGN KEY (event_id) REFERENCES events (id),
     CONSTRAINT fk_to_comp FOREIGN KEY (comp_ip) REFERENCES compilations (id)
 );
+CREATE TABLE IF NOT EXISTS comments
+(
+    id    BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id  BIGINT,
+    event_id BIGINT,
+    published TIMESTAMP WITHOUT TIME ZONE,
+    comment  varchar(2000),
+    CONSTRAINT fk_to_ev FOREIGN KEY (event_id) REFERENCES events (id),
+    CONSTRAINT fk_to_com FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
+CREATE TABLE IF NOT EXISTS response
+(
+    id    BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id  BIGINT,
+    comment_id BIGINT,
+    published TIMESTAMP WITHOUT TIME ZONE,
+    response  varchar(2000),
+    CONSTRAINT fk_to_resp FOREIGN KEY (user_id) REFERENCES users (id),
+    CONSTRAINT fk_to_comment FOREIGN KEY (comment_id) REFERENCES comments (id)
+);
