@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "aafe3d0c-88e6-49fc-b020-e51a3a2e0088",
-		"name": "Test Explore With Me - Comment",
+		"_postman_id": "e2a6d0d8-c1ba-4276-aa3f-ca1ed142a2a7",
+		"name": "Test Explore With Me - Comment Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "27667338"
 	},
@@ -69,25 +69,7 @@
 									"    pm.response.to.be.withBody;\r",
 									"    pm.response.to.be.json;\r",
 									"});\r",
-									"\r",
-									"const source = JSON.parse(pm.request.body.raw);\r",
-									"const target = pm.response.json();\r",
-									"\r",
-									"pm.test(\"Подборка должны содержать поля: id, title, pinned, events\", function () {\r",
-									"pm.expect(target).to.have.property('id');\r",
-									"pm.expect(target).to.have.property('title');\r",
-									"pm.expect(target).to.have.property('pinned');\r",
-									"pm.expect(target).to.have.property('events');\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
-									"    pm.expect(target.id).to.not.be.null;\r",
-									"    pm.expect(target.title).to.be.a(\"string\");\r",
-									"    pm.expect(target.events).to.be.an(\"array\");\r",
-									"\r",
-									"    pm.expect(source.events[0]).equal(target.events[0].id, 'Идентификаторы событий в подборке должен быть идентичен идентификаторам, указанным при создании подборки ');\r",
-									"    pm.expect(source.title).equal(target.title, 'Название подборки должно соответствовать указанному при создании');\r",
-									"});"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -702,11 +684,21 @@
 									"    const rnd = new RandomUtils();\r",
 									"\r",
 									"    try {\r",
-									"        const user = await api.addUser(rnd.getUser());\r",
+									"        const user = await api.addUser(rnd.getUser());  \r",
+									"        const user1 = await api.addUser(rnd.getUser());  \r",
+									"        pm.collectionVariables.set(\"uid\", user1.id);\r",
 									"        const category = await api.addCategory(rnd.getCategory());\r",
-									"        const compilation = await api.addCompilation(rnd.getCompilation());\r",
-									"        pm.collectionVariables.set('response', compilation);\r",
-									"        pm.collectionVariables.set('compid', compilation.id);\r",
+									"        let event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+									"        pm.collectionVariables.set(\"userId\", user1.id);\r",
+									"       \r",
+									"        event = await api.publishEvent(event.id);\r",
+									"        let comment = await api.addComment(user1.id, {\"eventId\": event.id, \"comment\": \"new coomemnd\"});\r",
+									"         let comment1 = await api.addComment(user1.id, {\"eventId\": event.id, \"comment\": \"new coomemnd\"});\r",
+									"\r",
+									"        pm.collectionVariables.set('ev', event.id); \r",
+									"  \r",
+									"            \r",
+									"       \r",
 									"    } catch(err) {\r",
 									"        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
 									"    }\r",
@@ -740,28 +732,15 @@
 									"    pm.response.to.be.withBody;\r",
 									"    pm.response.to.be.json;\r",
 									"});\r",
-									"\r",
-									"const source = pm.collectionVariables.get('response');\r",
-									"const target = pm.response.json();\r",
-									"\r",
-									"pm.test(\"Подборка должны содержать поля: id, title, pinned, events\", function () {\r",
-									"pm.expect(target).to.have.property('id');\r",
-									"pm.expect(target).to.have.property('title');\r",
-									"pm.expect(target).to.have.property('pinned');\r",
-									"pm.expect(target).to.have.property('events');\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
-									"    pm.expect(source.id).equal(target.id, 'Идентификатор подборки должен соответствовать идентификатору подборки добавленной ранее');\r",
-									"    pm.expect(source.title).equal(target.title, 'Название подборки должно соответствовать названию подборки добавленной ранее');\r",
-									"    pm.expect(source.pinned).equal(target.pinned, 'Закреплённость подборки должна соответствовать закреплённости подборки добавленной ранее');\r",
-									"    pm.expect(source.events.join()).equal(target.events.join(), 'События подборки должны соответствовать событиям подборки добавленной ранее');\r",
-									"});"
+									""
 								],
 								"type": "text/javascript"
 							}
 						}
 					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [
@@ -770,6 +749,15 @@
 								"value": "application/json"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{request_body}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{baseUrl}}/comments/events/:eventId",
 							"host": [
@@ -783,7 +771,7 @@
 							"variable": [
 								{
 									"key": "eventId",
-									"value": ""
+									"value": "{{ev}}"
 								}
 							]
 						}
@@ -802,12 +790,21 @@
 									"    const rnd = new RandomUtils();\r",
 									"\r",
 									"    try {\r",
-									"        const user = await api.addUser(rnd.getUser());\r",
+									"        const user = await api.addUser(rnd.getUser());  \r",
+									"        const user1 = await api.addUser(rnd.getUser());  \r",
+									"        pm.collectionVariables.set(\"uid\", user1.id);\r",
 									"        const category = await api.addCategory(rnd.getCategory());\r",
-									"        let newComp = rnd.getCompilation();\r",
-									"        newComp['pinned'] = true;\r",
-									"        const compilation = await api.addCompilation(newComp);\r",
-									"        pm.collectionVariables.set('response', compilation);\r",
+									"        let event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+									"        pm.collectionVariables.set(\"userId\", user1.id);\r",
+									"       \r",
+									"        event = await api.publishEvent(event.id);\r",
+									"        let comment = await api.addComment(user1.id, {\"eventId\": event.id, \"comment\": \"new coomemnd\"});\r",
+									"       \r",
+									"\r",
+									"        pm.collectionVariables.set('com', comment.id); \r",
+									"  \r",
+									"            \r",
+									"       \r",
 									"    } catch(err) {\r",
 									"        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
 									"    }\r",
@@ -841,30 +838,15 @@
 									"    pm.response.to.be.withBody;\r",
 									"    pm.response.to.be.json;\r",
 									"});\r",
-									"\r",
-									"const source = pm.collectionVariables.get('response');\r",
-									"const target = pm.response.json();\r",
-									"let founded;\r",
-									"target.forEach(function(element){if (element.id == source.id) founded = element});\r",
-									"\r",
-									"pm.test(\"Подборка должны содержать поля: id, title, pinned, events\", function () {\r",
-									"pm.expect(target[0]).to.have.property('id');\r",
-									"pm.expect(target[0]).to.have.property('title');\r",
-									"pm.expect(target[0]).to.have.property('pinned');\r",
-									"pm.expect(target[0]).to.have.property('events');\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
-									"    pm.expect(source.id).equal(founded.id, 'Идентификатор подборки должен соответствовать идентификатору подборки добавленной ранее');\r",
-									"    pm.expect(source.title).equal(founded.title, 'Название подборки должно соответствовать названию подборки добавленной ранее');\r",
-									"    pm.expect(source.pinned).equal(founded.pinned, 'Закрепленность подборки должна соответствовать закрепленности подборки добавленной ранее');\r",
-									"    pm.expect(source.events.join()).equal(founded.events.join(), 'События подборки должны соответствовать событиям подборки добавленной ранее');\r",
-									"});"
+									""
 								],
 								"type": "text/javascript"
 							}
 						}
 					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [
@@ -873,29 +855,29 @@
 								"value": "application/json"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{request_body}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{baseUrl}}/compilations?pinned=true&from=0&size=1000",
+							"raw": "{{baseUrl}}/users/:userId/comments",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"compilations"
+								"users",
+								":userId",
+								"comments"
 							],
-							"query": [
+							"variable": [
 								{
-									"key": "pinned",
-									"value": "true",
-									"description": "искать только закрепленные/не закрепленные подборки"
-								},
-								{
-									"key": "from",
-									"value": "0",
-									"description": "количество элементов, которые нужно пропустить для формирования текущего набора"
-								},
-								{
-									"key": "size",
-									"value": "1000",
-									"description": "количество элементов в наборе"
+									"key": "userId",
+									"value": "{{com}}"
 								}
 							]
 						}
@@ -914,12 +896,21 @@
 									"    const rnd = new RandomUtils();\r",
 									"\r",
 									"    try {\r",
-									"        const user = await api.addUser(rnd.getUser());\r",
+									"        const user = await api.addUser(rnd.getUser());  \r",
+									"        const user1 = await api.addUser(rnd.getUser());  \r",
+									"        pm.collectionVariables.set(\"uid\", user1.id);\r",
 									"        const category = await api.addCategory(rnd.getCategory());\r",
-									"        let newComp = rnd.getCompilation();\r",
-									"        newComp['pinned'] = true;\r",
-									"        const compilation = await api.addCompilation(newComp);\r",
-									"        pm.collectionVariables.set('response', compilation);\r",
+									"        let event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+									"        pm.collectionVariables.set(\"userId\", user1.id);\r",
+									"       \r",
+									"        event = await api.publishEvent(event.id);\r",
+									"        let comment = await api.addComment(user1.id, {\"eventId\": event.id, \"comment\": \"new coomemnd\"});\r",
+									"       \r",
+									"\r",
+									"        pm.collectionVariables.set('userId', user1.id); \r",
+									"  \r",
+									"            \r",
+									"       \r",
 									"    } catch(err) {\r",
 									"        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
 									"    }\r",
@@ -953,30 +944,15 @@
 									"    pm.response.to.be.withBody;\r",
 									"    pm.response.to.be.json;\r",
 									"});\r",
-									"\r",
-									"const source = pm.collectionVariables.get('response');\r",
-									"const target = pm.response.json();\r",
-									"let founded;\r",
-									"target.forEach(function(element){if (element.id == source.id) founded = element});\r",
-									"\r",
-									"pm.test(\"Подборка должны содержать поля: id, title, pinned, events\", function () {\r",
-									"pm.expect(target[0]).to.have.property('id');\r",
-									"pm.expect(target[0]).to.have.property('title');\r",
-									"pm.expect(target[0]).to.have.property('pinned');\r",
-									"pm.expect(target[0]).to.have.property('events');\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
-									"    pm.expect(source.id).equal(founded.id, 'Идентификатор подборки должен соответствовать идентификатору подборки добавленной ранее');\r",
-									"    pm.expect(source.title).equal(founded.title, 'Название подборки должно соответствовать названию подборки добавленной ранее');\r",
-									"    pm.expect(source.pinned).equal(founded.pinned, 'Закрепленность подборки должна соответствовать закрепленности подборки добавленной ранее');\r",
-									"    pm.expect(source.events.join()).equal(founded.events.join(), 'События подборки должны соответствовать событиям подборки добавленной ранее');\r",
-									"});"
+									""
 								],
 								"type": "text/javascript"
 							}
 						}
 					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [
@@ -985,29 +961,29 @@
 								"value": "application/json"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{request_body}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{baseUrl}}/compilations?pinned=true&from=0&size=1000",
+							"raw": "{{baseUrl}}/users/:userId/comments",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"compilations"
+								"users",
+								":userId",
+								"comments"
 							],
-							"query": [
+							"variable": [
 								{
-									"key": "pinned",
-									"value": "true",
-									"description": "искать только закрепленные/не закрепленные подборки"
-								},
-								{
-									"key": "from",
-									"value": "0",
-									"description": "количество элементов, которые нужно пропустить для формирования текущего набора"
-								},
-								{
-									"key": "size",
-									"value": "1000",
-									"description": "количество элементов в наборе"
+									"key": "userId",
+									"value": "{{userId}}"
 								}
 							]
 						}
